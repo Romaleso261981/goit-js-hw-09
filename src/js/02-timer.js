@@ -1,97 +1,69 @@
 import flatpickr from 'flatpickr';
 import Notiflix from 'notiflix';
-import "flatpickr/dist/flatpickr.min.css";
+import dayjs from 'dayjs';
+import 'flatpickr/dist/flatpickr.min.css';
 
-const day = document.querySelector('span[data-days]');
-const minutes = document.querySelector('span[data-minutes]');
-const hour = document.querySelector('span[data-hours]');
-const seconds = document.querySelector('span[data-seconds]');
-const startBtn = document.querySelector('button[data-start]')
-let inputDate = document.querySelector('#datetime-picker')
+const refs =  {
+day: document.querySelector('span[data-days]'),
+minutes: document.querySelector('span[data-minutes]'),
+hour: document.querySelector('span[data-hours]'),
+seconds: document.querySelector('span[data-seconds]'),
+startBtn: document.querySelector('button[data-start]')
+}
 
-startBtn.addEventListener('click', onStartTime)
+refs.startBtn.addEventListener('click', onStartTime);
 
+flatpickr('#datetime-picker', {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
 
-flatpickr(".inputTime", {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose(selectedDates) {
-        const newData = selectedDates
-      console.log(newData);
-    },
-  });
+  onClose: selectedDates => {
+    if(dayjs(startDateNow).isAfter(Date.now())){
+      refs.startBtn.disabled = true;
+    }
+    startDateNow = selectedDates[0].getTime();
+  },
+});
 
-  console.log(inputDate);
-
-// inputDate = flatpickr('datetime-picker', {
-//   enableTime: true,
-//   time_24hr: true,
-//   defaultDate: new Date(),
-//   minuteIncrement: 1,
-//   onClose(selectedDates) {
-//     console.log(selectedDates[0]);
-//   },
-// });
-
-// Notiflix.Notify.success('все пройшло успішно');
-// Notiflix.Notify.warning('Memento te hominem esse', () => {
-//   console.log('привіт');
-// });
-
-const startDataNaw = 1000000000000000
+let startDateNow = new Date().getTime();
 
 function onStartTime() {
+  const dataAfter = dayjs(startDateNow).isAfter(Date.now());
+  if(dataAfter) {
+    Notiflix.Notify.success("you have entered the correct date until the end of the war is left........");
     setInterval(() => {
-        const currentTime = Date.now()
-        const deltaTime = startDataNaw - currentTime;
-      console.log("start function");
-        const { days, hours, minutes, seconds } = convertMs(deltaTime);
-        console.log(days);
-        console.log(hours);
-        console.log(minutes);
-        console.log(seconds);
-        day.textContent = days;
-        hour.textContent = hours;
-        minutes.textContent = minutes;
-        seconds.textContent = seconds;
-      }, 1000);
+      const currentTime = Date.now();
+      const deltaTime = startDateNow - currentTime;
+      const { days, hours, mins, secs } = convertMs(deltaTime);
+      refs.day.textContent = days;
+      refs.hour.textContent = hours;
+      refs.minutes.textContent = mins;
+      refs.seconds.textContent = secs;
+    }, 1000);
+  } else{
+    Notiflix.Notify.failure("Please choose a date in the future");
+    // window.alert("Please choose a date in the future")
+  }
+  
 }
 
 function convertMs(ms) {
-    console.log(ms);
-    // Number of milliseconds per unit of time
-    const second = 1000;
-    const minute = second * 60;
-    const hour = minute * 60;
-    const day = hour * 24;
-  
-    // Remaining days
-    const days = Math.floor(ms / day);
-    // Remaining hours
-    const hours = Math.floor((ms % day) / hour);
-    // Remaining minutes
-    const minutes = Math.floor(((ms % day) % hour) / minute);
-    // Remaining seconds
-    const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-  
-    return { days, hours, minutes, seconds };
-  }
+  // Number of milliseconds per unit of time
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
-// function pad(value) {
-//   return String(value).padStart(2, '0');
-// }
+  // Remaining days
+  const days = Math.floor(ms / day);
+  // Remaining hours
+  const hours = Math.floor((ms % day) / hour);
+  // Remaining minutes
+  const mins = Math.floor(((ms % day) % hour) / minute);
+  // Remaining seconds
+  const secs = Math.floor((((ms % day) % hour) % minute) / second);
 
-// function getTimeComponents(time) {
-//   const days = pad(
-//     Math.floor((time % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24))
-//   );
-//   const hours = pad(
-//     Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-//   );
-//   const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-//   const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-
-//   return { days, hours, mins, secs };
-// }
+  return { days, hours, mins, secs };
+}
