@@ -13,7 +13,7 @@ startBtn: document.querySelector('button[data-start]')
 
 refs.startBtn.addEventListener('click', onStartTime);
 
-flatpickr('#datetime-picker', {
+flatpickr(".inputTime", {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
@@ -41,6 +41,7 @@ function onStartTime() {
       refs.hour.textContent = hours;
       refs.minutes.textContent = mins;
       refs.seconds.textContent = secs;
+      refs.startBtn.disabled = true;
     }, 1000);
   } else{
     Notiflix.Notify.failure("Please choose a date in the future");
