@@ -3,36 +3,42 @@ import Notiflix from 'notiflix';
 import dayjs from 'dayjs';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const refs =  {
-day: document.querySelector('span[data-days]'),
-minutes: document.querySelector('span[data-minutes]'),
-hour: document.querySelector('span[data-hours]'),
-seconds: document.querySelector('span[data-seconds]'),
-startBtn: document.querySelector('button[data-start]')
-}
+const refs = {
+  day: document.querySelector('span[data-days]'),
+  minutes: document.querySelector('span[data-minutes]'),
+  hour: document.querySelector('span[data-hours]'),
+  seconds: document.querySelector('span[data-seconds]'),
+  startBtn: document.querySelector('button[data-start]'),
+  input: document.querySelector('#datetime-picker'),
+};
 
 refs.startBtn.addEventListener('click', onStartTime);
 
-flatpickr(".inputTime", {
+flatpickr('.inputTime', {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
 
-  onClose: selectedDates => {
-    if(dayjs(startDateNow).isAfter(Date.now())){
-      refs.startBtn.disabled = true;
+  onChange: function (startDateNow) {
+    if (dayjs(startDateNow).isAfter(Date.now())) {
+      refs.startBtn.disabled = false;
     }
+  },
+
+  onClose: function (selectedDates) {
     startDateNow = selectedDates[0].getTime();
   },
 });
 
 let startDateNow = new Date().getTime();
-
+refs.startBtn.disabled = true;
 function onStartTime() {
   const dataAfter = dayjs(startDateNow).isAfter(Date.now());
-  if(dataAfter) {
-    Notiflix.Notify.success("you have entered the correct date until the end of the war is left........");
+  if (dataAfter) {
+    Notiflix.Notify.success(
+      'you have entered the correct date until the end of the war is left........'
+    );
     setInterval(() => {
       const currentTime = Date.now();
       const deltaTime = startDateNow - currentTime;
@@ -42,12 +48,12 @@ function onStartTime() {
       refs.minutes.textContent = mins;
       refs.seconds.textContent = secs;
       refs.startBtn.disabled = true;
+      refs.input.disabled = true;
     }, 1000);
-  } else{
-    Notiflix.Notify.failure("Please choose a date in the future");
+  } else {
+    Notiflix.Notify.failure('Please choose a date in the future');
     // window.alert("Please choose a date in the future")
   }
-  
 }
 
 function convertMs(ms) {
