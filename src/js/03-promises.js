@@ -17,7 +17,7 @@ function onFormSubmit(e) {
   const stepV = +refs.stepEl.value;
   const amountV = +refs.amountEl.value;
 
-  for (let i = 1; i <= amountV; i += 1) {
+  for (let i = 0; i <= amountV; i += 1) {
     console.log(i);
 
     createPromise(i, delayV)

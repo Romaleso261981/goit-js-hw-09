@@ -20,11 +20,11 @@ flatpickr('.inputTime', {
   defaultDate: new Date(),
   minuteIncrement: 1,
 
-  onChange: function (startDateNow) {
-    if (dayjs(startDateNow).isAfter(Date.now())) {
-      refs.startBtn.disabled = false;
-    }
-  },
+  // onChange: function (startDateNow) {
+  //   if (dayjs(startDateNow).isAfter(Date.now())) {
+  //     refs.startBtn.disabled = false;
+  //   }
+  // },
 
   onClose: function (selectedDates) {
     startDateNow = selectedDates[0].getTime();
@@ -32,7 +32,7 @@ flatpickr('.inputTime', {
 });
 
 let startDateNow = new Date().getTime();
-refs.startBtn.disabled = true;
+// refs.startBtn.disabled = true;
 function onStartTime() {
   const dataAfter = dayjs(startDateNow).isAfter(Date.now());
   if (dataAfter) {
@@ -52,7 +52,7 @@ function onStartTime() {
     }, 1000);
   } else {
     Notiflix.Notify.failure('Please choose a date in the future');
-    // window.alert("Please choose a date in the future")
+    window.alert("Please choose a date in the future")
   }
 }
 
