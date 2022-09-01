@@ -20,11 +20,17 @@ flatpickr('.inputTime', {
   defaultDate: new Date(),
   minuteIncrement: 1,
 
-  // onChange: function (startDateNow) {
-  //   if (dayjs(startDateNow).isAfter(Date.now())) {
-  //     refs.startBtn.disabled = false;
-  //   }
-  // },
+  onChange: function (selectedDates) {
+    startDateNow = selectedDates[0].getTime();
+    if (dayjs(startDateNow).isAfter(Date.now())) {
+      refs.startBtn.disabled = false;
+      Notiflix.Notify.success(
+        'you have entered the correct date until the end of the war is left........'
+      );
+      return;
+    }
+    Notiflix.Notify.failure('Please choose a date in the future');
+  },
 
   onClose: function (selectedDates) {
     startDateNow = selectedDates[0].getTime();
@@ -32,28 +38,19 @@ flatpickr('.inputTime', {
 });
 
 let startDateNow = new Date().getTime();
-// refs.startBtn.disabled = true;
+refs.startBtn.disabled = true;
 function onStartTime() {
-  const dataAfter = dayjs(startDateNow).isAfter(Date.now());
-  if (dataAfter) {
-    Notiflix.Notify.success(
-      'you have entered the correct date until the end of the war is left........'
-    );
-    setInterval(() => {
-      const currentTime = Date.now();
-      const deltaTime = startDateNow - currentTime;
-      const { days, hours, mins, secs } = convertMs(deltaTime);
-      refs.day.textContent = days;
-      refs.hour.textContent = hours;
-      refs.minutes.textContent = mins;
-      refs.seconds.textContent = secs;
-      refs.startBtn.disabled = true;
-      refs.input.disabled = true;
-    }, 1000);
-  } else {
-    Notiflix.Notify.failure('Please choose a date in the future');
-    window.alert("Please choose a date in the future")
-  }
+  setInterval(() => {
+    const currentTime = Date.now();
+    const deltaTime = startDateNow - currentTime;
+    const { days, hours, mins, secs } = convertMs(deltaTime);
+    refs.day.textContent = days;
+    refs.hour.textContent = hours;
+    refs.minutes.textContent = mins;
+    refs.seconds.textContent = secs;
+    refs.startBtn.disabled = true;
+    refs.input.disabled = true;
+  }, 1000);
 }
 
 function convertMs(ms) {
